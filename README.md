@@ -1,4 +1,4 @@
-# docx2pdf tool with conversion
+# docx2pdf tool with concatenation
 Use this tool to convert docx files to pdf and concatenate them into a single pdf
 
 ## Rationale
