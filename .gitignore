@@ -2,4 +2,5 @@ bin/
 build/
 scripts/builder/__pycache__/
 input/
+src/
 !input/README.md
