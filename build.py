@@ -2,6 +2,7 @@
 # @author Daniel J. Finnegan
 
 import shutil, os, os.path, sys
+import argparse
 from subprocess import call
 
 project_root = os.getcwd()
@@ -14,4 +15,9 @@ if __name__ == '__main__':
 	shutil.rmtree('build', ignore_errors=True)
 	shutil.rmtree('src', ignore_errors=True)
 
-	build_project.build_full_package(project_root)
+	## Parse the arguments to decide if we want to use the input file list or not
+	parser = argparse.ArgumentParser (description='Converts docx files to pdf and concatenates them')
+	parser.add_argument ('-f', '--use-file-list', dest='use_file', help='Use an input file list', action='store_true')
+	args = parser.parse_args ()
+
+	build_project.build_full_package(project_root, args.use_file)

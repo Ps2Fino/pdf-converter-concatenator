@@ -32,7 +32,7 @@ TEX_FILE_INSERT = """\\includepdf[pages=-]{build/@FILE_NAME@.pdf}
 def main (root_dir, file_list):
     tex_file_content = TEX_HEADER
     for file_name in file_list:
-        root, ext = os.path.splitext (file_name)
+        root, ext = os.path.splitext (os.path.basename (file_name)) # Complete paths are passed into the program from cmake
         tex_file_content = tex_file_content + TEX_FILE_INSERT.replace ('@FILE_NAME@', root)
         # print (insert_string)
 

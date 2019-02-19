@@ -12,6 +12,19 @@ project (
         NONE
 )
 
+option (
+    USE_FILE_LIST
+    "Use the input file list to specify which documents to convert"
+    OFF
+)
+
+if (USE_FILE_LIST)
+
+message (
+    STATUS
+    "Getting the list of files from ./input/file_list.txt..."
+)
+
 file (
     TOUCH
     ${CMAKE_SOURCE_DIR}/input/file_list.txt
@@ -22,6 +35,34 @@ file (
     ${CMAKE_SOURCE_DIR}/input/file_list.txt
     FILES_TO_CONVERT
 )
+
+else ()
+
+message (
+    STATUS
+    "Using all files located in ./input/..."
+)
+
+## Automatic usage through all files in the directory
+file (
+    GLOB
+    FILES_TO_CONVERT
+    LIST_DIRECTORIES
+        false
+    ${CMAKE_SOURCE_DIR}/input/*.doc*
+)
+
+#message (
+#    STATUS
+#    ${FILES_TO_CONVERT}
+#)
+#
+#message (
+#    FATAL_ERROR
+#    "Check print"
+#)
+
+endif ()
 
 list (
     LENGTH

@@ -13,9 +13,9 @@ def convert_to_pdf(root_dir, file_name, output_dir_path):
 	output_file_path = os.path.join (output_dir_path, root) + '.pdf'
 	try:
 		word = win32.DispatchEx("Word.Application")
-		print ('Opening', input_file_path)
+		# print ('Opening', input_file_path)
 		worddoc = word.Documents.Open(input_file_path)
-		print ('Saving', output_file_path)
+		# print ('Saving', output_file_path)
 		worddoc.SaveAs(output_file_path, FileFormat = 17)
 		worddoc.Close()
 	except:
@@ -30,7 +30,7 @@ def main (root_dir, file_list):
 		os.mkdir (output_dir_path)
 
 	for file_name in file_list:
-		convert_to_pdf (root_dir, file_name, output_dir_path)
+		convert_to_pdf (root_dir, os.path.basename (file_name), output_dir_path) # Absolute paths are passed from cmake
 
 if __name__ == '__main__':
 	root_dir = os.getcwd ()
