@@ -6,22 +6,32 @@
 import os
 from subprocess import call
 
-UPDATER_CMAKE_ARGS = ['-DUSE_FILE_LIST=ON'] # Turn this on to build the installer
-UPDATER_BUILD_CUSTOM = True # Set this to True if your project has a custom build function
+USE_FILE_LIST = ['-DUSE_FILE_LIST=ON']
+SKIP_CONVERSION = ['-DSKIP_CONVERSION=ON']
 
 # Default implementation just calls cmake
 # Reimplement as you see fit
-def build_full_package(project_root, use_file):
+def build_full_package(project_root, use_file, skip_conversion):
 	if not os.path.isdir(os.path.join(project_root, 'bin')):
 		os.mkdir(os.path.join(project_root, 'bin'))
 
 	os.chdir(os.path.join(project_root, 'bin'))
 
+	CMAKE_ARGS = []
 	if use_file:
-		call(['cmake'] + UPDATER_CMAKE_ARGS + ['..'])
-	else:
-		call(['cmake'] + ['..'])
+		CMAKE_ARGS = CMAKE_ARGS + USE_FILE_LIST
 
+	if skip_conversion:
+		CMAKE_ARGS = CMAKE_ARGS + SKIP_CONVERSION
+
+	# if use_file:
+	# 	call(['cmake'] + UPDATER_CMAKE_ARGS + ['..'])
+	# else:
+	# 	call(['cmake'] + ['..'])
+
+	print (CMAKE_ARGS)
+
+	call (['cmake'] + CMAKE_ARGS + ['..'])
 	call(['cmake', '--build', '.'])
 
 ####################################################################

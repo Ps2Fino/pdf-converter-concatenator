@@ -18,6 +18,12 @@ option (
     OFF
 )
 
+option (
+    SKIP_CONVERSION
+    "Skip the conversion step and just concatenate PDFs"
+    OFF
+)
+
 if (USE_FILE_LIST)
 
 message (
@@ -43,6 +49,19 @@ message (
     "Using all files located in ./input/..."
 )
 
+if (SKIP_CONVERSION)
+
+## Automatic usage through all files in the directory
+file (
+    GLOB
+    FILES_TO_CONVERT
+    LIST_DIRECTORIES
+        false
+    ${CMAKE_SOURCE_DIR}/input/*.pdf
+)
+
+else ()
+
 ## Automatic usage through all files in the directory
 file (
     GLOB
@@ -51,6 +70,8 @@ file (
         false
     ${CMAKE_SOURCE_DIR}/input/*.doc*
 )
+
+endif ()
 
 #message (
 #    STATUS
@@ -89,6 +110,8 @@ add_custom_target (
         "Writing the tex file..."
 )
 
+if (NOT SKIP_CONVERSION)
+
 # We call the python script and pass in the file names for conversion
 add_custom_target (
     gen_pdfs
@@ -101,6 +124,8 @@ add_custom_target (
     COMMENT
         "Converting the docx files to pdfs..."
 )
+
+endif ()
 
 else ()
 

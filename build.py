@@ -18,6 +18,7 @@ if __name__ == '__main__':
 	## Parse the arguments to decide if we want to use the input file list or not
 	parser = argparse.ArgumentParser (description='Converts docx files to pdf and concatenates them')
 	parser.add_argument ('-f', '--use-file-list', dest='use_file', help='Use an input file list', action='store_true')
+	parser.add_argument ('--no-doc', dest='no_doc', action='store_true', help='Skip the conversion stage and just concatenates pdfs')
 	args = parser.parse_args ()
 
-	build_project.build_full_package(project_root, args.use_file)
+	build_project.build_full_package(project_root, args.use_file, args.no_doc)
