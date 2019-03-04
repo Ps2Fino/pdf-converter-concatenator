@@ -23,9 +23,8 @@ def convert_to_pdf(root_dir, file_name, output_dir_path):
 	else:
 		word.Quit()
 
-def main (root_dir, file_list):
+def main (root_dir, output_dir_path, file_list):
 	## Convert each file to a pdf using 
-	output_dir_path = os.path.join (root_dir, 'build')
 	if not os.path.isdir (output_dir_path):
 		os.mkdir (output_dir_path)
 
@@ -33,9 +32,14 @@ def main (root_dir, file_list):
 		convert_to_pdf (root_dir, os.path.basename (file_name), output_dir_path) # Absolute paths are passed from cmake
 
 if __name__ == '__main__':
-	root_dir = os.getcwd ()
+	# root_dir = os.getcwd ()
 	parser = argparse.ArgumentParser (description='Convert docx files to pdf')
 	parser.add_argument ('files', nargs='+', help='List of files to convert. Specify file name only')
+	parser.add_argument ('--output-directory', dest='output_dir', help='Directory in which to save PDFs')
+	parser.add_argument ('--working-directory', dest='working_dir', action='store', help='Root directory of this python script')
 
 	args = parser.parse_args ()
-	main(root_dir, args.files)
+
+	root_dir = os.path.abspath (args.working_dir)
+	output_dir_path = os.path.join (root_dir, args.output_dir)
+	main(root_dir, output_dir_path, args.files)

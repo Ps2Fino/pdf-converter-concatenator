@@ -29,7 +29,6 @@ find_package (
 	LATEX
 	COMPONENTS
 		PDFLATEX
-		BIBTEX
 )
 
 # Set and create a directory for dumping output files to
@@ -88,5 +87,10 @@ add_custom_target (
 
 add_dependencies (
 	make_pdf
-		main_first_pass
+	main_first_pass
+)
+
+add_dependencies (
+	main_first_pass
+	write_tex_file
 )

@@ -18,6 +18,12 @@ option (
     OFF
 )
 
+option (
+    SKIP_CONVERSION
+    "Skip the conversion step and just concatenate PDFs"
+    OFF
+)
+
 if (USE_FILE_LIST)
 
 message (
@@ -43,6 +49,19 @@ message (
     "Using all files located in ./input/..."
 )
 
+if (SKIP_CONVERSION)
+
+## Automatic usage through all files in the directory
+file (
+    GLOB
+    FILES_TO_CONVERT
+    LIST_DIRECTORIES
+        false
+    ${CMAKE_SOURCE_DIR}/input/*.pdf
+)
+
+else () # if (SKIP_CONVERSION)
+
 ## Automatic usage through all files in the directory
 file (
     GLOB
@@ -52,17 +71,19 @@ file (
     ${CMAKE_SOURCE_DIR}/input/*.doc*
 )
 
-#message (
-#    STATUS
-#    ${FILES_TO_CONVERT}
-#)
-#
+endif () # if (SKIP_CONVERSION)
+
+endif () # if (USE_FILE_LIST)
+
+message (
+    STATUS
+    "Files to convert: ${FILES_TO_CONVERT}"
+)
+
 #message (
 #    FATAL_ERROR
 #    "Check print"
 #)
-
-endif ()
 
 list (
     LENGTH
@@ -77,12 +98,33 @@ find_package (
     PythonInterp
 )
 
+if (SKIP_CONVERSION)
+
+message (
+    STATUS
+    "Skipping the conversion process..."
+)
+
 # We call the python script and pass in the file names for conversion
 add_custom_target (
     write_tex_file
     ALL
     COMMAND
-        ${PYTHON_EXECUTABLE} utils/pdf_concatenate.py ${FILES_TO_CONVERT}
+        ${PYTHON_EXECUTABLE} utils/pdf_concatenate.py --working-directory=${CMAKE_SOURCE_DIR} --pdf-directory=input ${FILES_TO_CONVERT}
+    WORKING_DIRECTORY
+        ${CMAKE_SOURCE_DIR}
+    COMMENT
+        "Writing the tex file..."
+)
+
+else () # if (SKIP_CONVERSION)
+
+# We call the python script and pass in the file names for conversion
+add_custom_target (
+    write_tex_file
+    ALL
+    COMMAND
+        ${PYTHON_EXECUTABLE} utils/pdf_concatenate.py --working-directory=${CMAKE_SOURCE_DIR} --pdf-directory=build ${FILES_TO_CONVERT}
     WORKING_DIRECTORY
         ${CMAKE_SOURCE_DIR}
     COMMENT
@@ -95,19 +137,21 @@ add_custom_target (
     DEPENDS
         write_tex_file
     COMMAND
-        ${PYTHON_EXECUTABLE} utils/docx_to_pdf.py ${FILES_TO_CONVERT}
+        ${PYTHON_EXECUTABLE} utils/docx_to_pdf.py --working-directory=${CMAKE_SOURCE_DIR} --output-directory=build ${FILES_TO_CONVERT}
     WORKING_DIRECTORY
         ${CMAKE_SOURCE_DIR}
     COMMENT
         "Converting the docx files to pdfs..."
 )
 
-else ()
+endif () # if (SKIP_CONVERSION)
+
+else () # if (NUM_FILES_TO_CONVERT GREATER 0)
 
 message (
     FATAL_ERROR
     "Please specify at least one filename in the input file list"
 )
 
-endif ()
+endif () # if (NUM_FILES_TO_CONVERT GREATER 0)
 

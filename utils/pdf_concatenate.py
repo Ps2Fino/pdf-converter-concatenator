@@ -25,15 +25,16 @@ TEX_FOOTER = """
 \\end{document}
 """
 
-TEX_FILE_INSERT = """\\includepdf[pages=-]{build/@FILE_NAME@.pdf}
+TEX_FILE_INSERT = """\\includepdf[pages=-]{@PDF_DIR@/@FILE_NAME@.pdf}
 """
 
 ## Simply writes the tex file, replacing the template for the files passed to the program
-def main (root_dir, file_list):
+def main (root_dir, pdf_dir, file_list):
     tex_file_content = TEX_HEADER
     for file_name in file_list:
         root, ext = os.path.splitext (os.path.basename (file_name)) # Complete paths are passed into the program from cmake
-        tex_file_content = tex_file_content + TEX_FILE_INSERT.replace ('@FILE_NAME@', root)
+        build_folder = TEX_FILE_INSERT.replace ('@PDF_DIR@', pdf_dir)
+        tex_file_content = tex_file_content + build_folder.replace ('@FILE_NAME@', root)
         # print (insert_string)
 
     tex_file_content = tex_file_content + TEX_FOOTER
@@ -45,9 +46,12 @@ def main (root_dir, file_list):
     # print ('Done')
 
 if __name__ == '__main__':
-    root_dir = os.getcwd ()
+    # root_dir = os.getcwd ()
     parser = argparse.ArgumentParser (description='Generates a tex file specifying pdf files to concatentate together')
     parser.add_argument ('files', nargs='+', help='List of files to convert. Specify file name only')
+    parser.add_argument ('--working-directory', dest='working_dir', action='store', help='Root directory of this python script')
+    parser.add_argument ('--pdf-directory', dest='pdf_dir', action='store', help='Directory containing the PDFs')
 
     args = parser.parse_args ()
-    main(root_dir, args.files)
+    root_dir = os.path.abspath (args.working_dir)
+    main(root_dir, args.pdf_dir, args.files)
