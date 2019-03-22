@@ -27,3 +27,11 @@ To convert a subset of files, take the following steps in order:
 make.bat [-f|--use-file-list]
 ```
 to convert all the files specified in the file list
+
+As of the latest version, you can also simply concatenate a list of PDFs, skipping the conversion process.
+Simply perform the steps above using PDF files and call the batch program specifyin `--no-doc`.
+For example:
+```
+make.bat [--use-file-list] [--no-doc]
+```
+would concatenate all the pdfs listed in the file and in the order listed.
