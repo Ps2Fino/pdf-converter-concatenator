@@ -24,6 +24,12 @@ option (
     OFF
 )
 
+option (
+    USE_SPEC_PAGES
+    "Concatenate specific pages of each PDF"
+    OFF
+)
+
 if (USE_FILE_LIST)
 
 message (
@@ -41,6 +47,15 @@ file (
     ${CMAKE_SOURCE_DIR}/input/file_list.txt
     FILES_TO_CONVERT
 )
+
+if (USE_SPEC_PAGES)
+
+message (
+    STATUS
+    "Preparing the input json file from ./input/file_spec.csv"
+)
+
+endif ()
 
 else ()
 
@@ -105,6 +120,34 @@ message (
     "Skipping the conversion process..."
 )
 
+if (USE_SPEC_PAGES)
+
+# We call the python script and pass in the file names for conversion
+add_custom_target (
+    write_tex_file
+    DEPENDS
+        create_json_file
+    COMMAND
+        ${PYTHON_EXECUTABLE} utils/pdf_concatenate.py --working-directory=${CMAKE_SOURCE_DIR} --pdf-directory=input --use-json-spec ${FILES_TO_CONVERT}
+    WORKING_DIRECTORY
+        ${CMAKE_SOURCE_DIR}
+    COMMENT
+        "Writing the tex file..."
+)
+
+## Create the target here to create the json file
+add_custom_target (
+    create_json_file
+    COMMAND
+        ${PYTHON_EXECUTABLE} utils/use_json_spec.py --working-directory=${CMAKE_SOURCE_DIR} --spec-directory=input
+    WORKING_DIRECTORY
+        ${CMAKE_SOURCE_DIR}
+    COMMENT
+        "Creating the json file for specifying pages..."
+)
+
+else ()
+
 # We call the python script and pass in the file names for conversion
 add_custom_target (
     write_tex_file
@@ -117,7 +160,37 @@ add_custom_target (
         "Writing the tex file..."
 )
 
+endif () # if (USE_SPEC_PAGES)
+
 else () # if (SKIP_CONVERSION)
+
+if (USE_SPEC_PAGES)
+
+# We call the python script and pass in the file names for conversion
+add_custom_target (
+    write_tex_file
+    DEPENDS
+        create_json_file
+    COMMAND
+        ${PYTHON_EXECUTABLE} utils/pdf_concatenate.py --working-directory=${CMAKE_SOURCE_DIR} --pdf-directory=input --use-json-spec ${FILES_TO_CONVERT}
+    WORKING_DIRECTORY
+        ${CMAKE_SOURCE_DIR}
+    COMMENT
+        "Writing the tex file..."
+)
+
+## Create the target here to create the json file
+add_custom_target (
+    create_json_file
+    COMMAND
+        ${PYTHON_EXECUTABLE} utils/use_json_spec.py --working-directory=${CMAKE_SOURCE_DIR} --spec-directory=input
+    WORKING_DIRECTORY
+        ${CMAKE_SOURCE_DIR}
+    COMMENT
+        "Creating the json file for specifying pages..."
+)
+
+else ()
 
 # We call the python script and pass in the file names for conversion
 add_custom_target (
@@ -130,6 +203,8 @@ add_custom_target (
     COMMENT
         "Writing the tex file..."
 )
+
+endif ()
 
 # We call the python script and pass in the file names for conversion
 add_custom_target (

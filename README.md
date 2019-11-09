@@ -26,4 +26,15 @@ To convert a subset of files, take the following steps in order:
 ```
 make.bat [-f|--use-file-list]
 ```
-to convert all the files specified in the file list
+to convert all the files specified in the file list.
+
+Finally, the program can also be used to concatenate specific pages of a number of pdf files together.
+To convert in a page-wise manner:
+1. Create a csv file called `page_spec.csv` in the `input` directory.
+2. The format of the csv file is filename,start,end where filename excludes the extension and start and end are the page ranges.
+3. Repeat line by line to build up the output pdf in whichever way you like. Specify the same page as start and end to include just one page.
+4. Execute:
+```
+make.bat [-f|--use-file-list] --use-page-spec
+```
+to convert all the files specified in the csv file in a page-wise manner

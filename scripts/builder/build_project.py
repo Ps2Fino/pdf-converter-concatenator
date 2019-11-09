@@ -8,10 +8,11 @@ from subprocess import call
 
 USE_FILE_LIST = ['-DUSE_FILE_LIST=ON']
 SKIP_CONVERSION = ['-DSKIP_CONVERSION=ON']
+USE_SPEC_PAGES = ['-DUSE_SPEC_PAGES=ON']
 
 # Default implementation just calls cmake
 # Reimplement as you see fit
-def build_full_package(project_root, use_file, skip_conversion):
+def build_full_package(project_root, use_file, skip_conversion, page_spec):
 	if not os.path.isdir(os.path.join(project_root, 'bin')):
 		os.mkdir(os.path.join(project_root, 'bin'))
 
@@ -23,6 +24,9 @@ def build_full_package(project_root, use_file, skip_conversion):
 
 	if skip_conversion:
 		CMAKE_ARGS = CMAKE_ARGS + SKIP_CONVERSION
+
+	if page_spec:
+		CMAKE_ARGS = CMAKE_ARGS + USE_SPEC_PAGES
 
 	# if use_file:
 	# 	call(['cmake'] + UPDATER_CMAKE_ARGS + ['..'])
