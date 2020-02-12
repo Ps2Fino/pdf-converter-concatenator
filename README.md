@@ -35,6 +35,11 @@ To convert in a page-wise manner:
 3. Repeat line by line to build up the output pdf in whichever way you like. Specify the same page as start and end to include just one page.
 4. Execute:
 ```
-make.bat [-f|--use-file-list] --use-page-spec
+make.bat [-f|--use-file-list] --use-page-spec [-b|--beamer]
 ```
-to convert all the files specified in the csv file in a page-wise manner
+to convert all the files specified in the csv file in a page-wise manner.
+`beamer` specifies landscape mode.
+
+## Known issues
+
+* Don't use spaces in file names

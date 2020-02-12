@@ -30,6 +30,12 @@ option (
     OFF
 )
 
+option (
+    USE_BEAMER
+    "Specify landscape (beamer) mode"
+    OFF
+)
+
 if (USE_FILE_LIST)
 
 message (
@@ -122,6 +128,23 @@ message (
 
 if (USE_SPEC_PAGES)
 
+if (USE_BEAMER)
+
+# We call the python script and pass in the file names for conversion
+add_custom_target (
+    write_tex_file
+    DEPENDS
+        create_json_file
+    COMMAND
+        ${PYTHON_EXECUTABLE} utils/pdf_concatenate.py --working-directory=${CMAKE_SOURCE_DIR} --pdf-directory=input --use-json-spec ${FILES_TO_CONVERT} --beamer
+    WORKING_DIRECTORY
+        ${CMAKE_SOURCE_DIR}
+    COMMENT
+        "Writing the tex file..."
+)
+
+else ()
+
 # We call the python script and pass in the file names for conversion
 add_custom_target (
     write_tex_file
@@ -135,6 +158,8 @@ add_custom_target (
         "Writing the tex file..."
 )
 
+endif () # if USE_BEAMER
+
 ## Create the target here to create the json file
 add_custom_target (
     create_json_file
@@ -144,6 +169,22 @@ add_custom_target (
         ${CMAKE_SOURCE_DIR}
     COMMENT
         "Creating the json file for specifying pages..."
+)
+
+else ()
+
+if (USE_BEAMER)
+
+# We call the python script and pass in the file names for conversion
+add_custom_target (
+    write_tex_file
+    ALL
+    COMMAND
+        ${PYTHON_EXECUTABLE} utils/pdf_concatenate.py --working-directory=${CMAKE_SOURCE_DIR} --pdf-directory=input ${FILES_TO_CONVERT} --beamer
+    WORKING_DIRECTORY
+        ${CMAKE_SOURCE_DIR}
+    COMMENT
+        "Writing the tex file..."
 )
 
 else ()
@@ -160,11 +201,30 @@ add_custom_target (
         "Writing the tex file..."
 )
 
+endif () # if (USE_BEAMER)
+
 endif () # if (USE_SPEC_PAGES)
 
 else () # if (SKIP_CONVERSION)
 
 if (USE_SPEC_PAGES)
+
+if (USE_BEAMER)
+
+# We call the python script and pass in the file names for conversion
+add_custom_target (
+    write_tex_file
+    DEPENDS
+        create_json_file
+    COMMAND
+        ${PYTHON_EXECUTABLE} utils/pdf_concatenate.py --working-directory=${CMAKE_SOURCE_DIR} --pdf-directory=input --use-json-spec ${FILES_TO_CONVERT} -- beamer
+    WORKING_DIRECTORY
+        ${CMAKE_SOURCE_DIR}
+    COMMENT
+        "Writing the tex file..."
+)
+
+else ()
 
 # We call the python script and pass in the file names for conversion
 add_custom_target (
@@ -179,6 +239,8 @@ add_custom_target (
         "Writing the tex file..."
 )
 
+endif () # if (USE_BEAMER)
+
 ## Create the target here to create the json file
 add_custom_target (
     create_json_file
@@ -192,6 +254,8 @@ add_custom_target (
 
 else ()
 
+if (USE_BEAMER)
+
 # We call the python script and pass in the file names for conversion
 add_custom_target (
     write_tex_file
@@ -203,6 +267,22 @@ add_custom_target (
     COMMENT
         "Writing the tex file..."
 )
+
+else ()
+
+# We call the python script and pass in the file names for conversion
+add_custom_target (
+    write_tex_file
+    ALL
+    COMMAND
+        ${PYTHON_EXECUTABLE} utils/pdf_concatenate.py --working-directory=${CMAKE_SOURCE_DIR} --pdf-directory=build ${FILES_TO_CONVERT} --beamer
+    WORKING_DIRECTORY
+        ${CMAKE_SOURCE_DIR}
+    COMMENT
+        "Writing the tex file..."
+)
+
+endif () # (USE_BEAMER)
 
 endif ()
 

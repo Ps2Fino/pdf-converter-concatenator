@@ -20,6 +20,7 @@ if __name__ == '__main__':
 	parser.add_argument ('-f', '--use-file-list', dest='use_file', help='Use an input file list', action='store_true')
 	parser.add_argument ('--no-doc', dest='no_doc', action='store_true', help='Skip the conversion stage and just concatenates pdfs')
 	parser.add_argument ('--use-page-spec', dest='page_spec', action='store_true', help='Use a csv file to specify pages for concatenation')
+	parser.add_argument ('-b', '--beamer', dest='is_beamer', action='store_true', help='Use landscape (beamer) mode')
 	args = parser.parse_args ()
 
-	build_project.build_full_package(project_root, args.use_file, args.no_doc, args.page_spec)
+	build_project.build_full_package(project_root, args.use_file, args.no_doc, args.page_spec, args.is_beamer)
