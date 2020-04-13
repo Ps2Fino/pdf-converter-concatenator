@@ -40,6 +40,11 @@ make.bat [-f|--use-file-list] --use-page-spec [-b|--beamer]
 to convert all the files specified in the csv file in a page-wise manner.
 `beamer` specifies landscape mode.
 
+To just concatenate PDFs and skip the conversion phase use
+```
+make.bat [-f|--use-file-list] [--no-doc] --use-page-spec [-b|--beamer]
+```
+
 ## Known issues
 
 * Don't use spaces in file names
